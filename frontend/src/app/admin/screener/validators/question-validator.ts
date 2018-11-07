@@ -8,7 +8,7 @@ export function questionValidator(control: AbstractControl): {[key: string]: any
     const label: string = control.get('label').value; 
     const controlType: ControlType = control.get('controlType').value;
      
-    let key: Key = { name: 'invalid.sdkjflsajfkljsalfkjsdlkfjslfINVALIDinvalid', type: ''};
+    let key: Key = { name: 'invalid.sdkjflsajfkljsalfkjsdlkfjslfINVALIDinvalid', type: '', description: ''};
 
     let options: number[] = [];
     let conditionals: string[] = [];

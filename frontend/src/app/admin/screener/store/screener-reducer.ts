@@ -37,7 +37,7 @@ export function reducer(state = initialState, action: ScreenerActions): State {
             const index = getConstantQuestionsLength(state);
             const question = blankQuestion(index);
             const control = question_to_control(question);
-            const key_group = key_to_group({ name: question.key.name, type: question.key.type });
+            const key_group = key_to_group({ name: question.key.name, type: question.key.type, description: question.key.description });
             const question_group = new FormGroup(control, questionValidator);
             question_group.addControl('key', key_group);
             state.form.addControl(question.id, question_group);
@@ -65,7 +65,7 @@ export function reducer(state = initialState, action: ScreenerActions): State {
             const question = blankQuestion(index);
             question.expandable = false;
             const control = question_to_control(question);
-            const key_group = key_to_group({ name: question.key.name, type: question.key.type });
+            const key_group = key_to_group({ name: question.key.name, type: question.key.type, description: question.key.description });
             const question_group = new FormGroup(control, questionValidator);
             question_group.addControl('key', key_group);
             state.form.addControl(question.id, question_group);
@@ -479,7 +479,8 @@ export function blankQuestion(index: number): Question_2 {
         multiSelectOptions: [],
         key: {
             name: keyName,
-            type: ''
+            type: '',
+            description: ''
         }
     };
 }

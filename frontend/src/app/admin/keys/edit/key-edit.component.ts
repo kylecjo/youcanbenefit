@@ -42,10 +42,20 @@ export class KeyEditComponent implements OnInit, OnDestroy {
       ]
     )
   );
+  descriptionControl = new FormControl(
+    '',
+    Validators.compose(
+      [
+        Validators.required,
+      ]
+    )
+  );
+
   typeControl = new FormControl(this.typeOptions[0]);
   form = new FormGroup({
     name: this.nameControl,
-    type: this.typeControl
+    type: this.typeControl,
+    description: this.descriptionControl
   });
   saving = false;
 
@@ -78,7 +88,8 @@ export class KeyEditComponent implements OnInit, OnDestroy {
   dispatchKeyUpdate() {
     const key: Key = {
       name: this.form.value.name,
-      type: this.form.value.type
+      type: this.form.value.type,
+      description: this.form.value.description
     };
     this.data.updateKey(key)
       .take(1)

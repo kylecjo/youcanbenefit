@@ -10,11 +10,13 @@
       <thead class="bg-darken-2">
         <th> <strong>key name</strong> </th>
         <th> key type </th>
+        <th> description </th>
       </thead>
       <tbody>
         <tr *ngFor="let key of (loadedKeys$ | async)" class="py2">
           <td> {{ key.name }} </td>
           <td> {{ key.type }} </td>
+          <td> {{ key.description }} </td>
         </tr>
       </tbody>
     </table> 
