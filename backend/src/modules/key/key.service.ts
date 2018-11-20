@@ -55,50 +55,33 @@ export class KeyService {
     }
 
     findAll(): Observable<any> {
-        // return Observable.fromPromise(this.client.indices.getMapping({
-        //     ...this.baseParams
-        // }))
-        //     .pluck('master_screener', 'mappings', 'queries', 'properties')
-        //     .map(keyObj => {
-        //         delete keyObj['meta'];
-        //         delete keyObj['query'];
-        //         return keyObj
-        //     })
-        //     .map(obj => {
-        //         const array = [];
-
-        //         for(const name in obj) {
-        //             if (obj.hasOwnProperty(name)) {
-        //                 array.push({
-        //                     name,
-        //                     type: obj[name].type
-        //                 })
-        //             }
-        //         }
-
-        //         return array
-        //     })
         return Observable.fromPromise(this.client.indices.getMapping({
             ...this.baseParams
         }))
-            .pluck('master_screener', 'mappings', 'queries', 'properties')
+            .pluck('master_screener', 'mappings', 'queries')
             .map(keyObj => {
-                delete keyObj['meta'];
-                delete keyObj['query'];
+                delete keyObj['properties']['meta']
+                delete keyObj['properties']['query']
                 return keyObj
             })
             .map(obj => {
                 const array = [];
-
-                for(const name in obj) {
-                    if (obj.hasOwnProperty(name)) {
-                        array.push({
-                            name,
-                            type: obj[name].type
-                        })
+                for(const name in obj['properties']) {
+                    if (obj['properties'].hasOwnProperty(name)) {
+                        if(obj['_meta']){
+                            array.push({
+                                name,
+                                type: obj['properties'][name].type,
+                                description: obj['_meta'][name]
+                            })
+                        } else {
+                            array.push({
+                                name,
+                                type: obj['properties'][name].type,
+                            })
+                        }
                     }
                 }
-
                 return array
             })
     }
