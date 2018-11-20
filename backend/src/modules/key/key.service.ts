@@ -21,25 +21,63 @@ export class KeyService {
     }
 
     create(key: KeyDto): Promise<any> {
-        return this.client.indices.putMapping({
-            ...this.baseParams,
-            body: {
-                properties: {
-                    [key.name]: {
-                        type: key['type'] === "number" ? "integer" : "boolean"
-                    }
+        let body = {
+            _meta: {
+
+            },
+            properties: {
+                [key.name]: {
+                    type: key['type'] === 'number' ? 'integer' : 'boolean'
                 }
             }
-        })
-            .then(res => res.acknowledged )
-            .catch(err => {
-                return {
-                    "error": "key messed up"
-                }
+            
+        }
+
+        return this.client.indices.getMapping({
+            ...this.baseParams
+        }).then(res => {
+            if(res.master_screener.mappings.queries._meta){
+                body._meta = res.master_screener.mappings.queries._meta
+            }
+            body._meta[key.name] = key.description
+        }).then(res => {
+            return this.client.indices.putMapping({
+                ...this.baseParams,
+                body
             })
+                .then(res => res.acknowledged )
+                .catch(err => {
+                    return {
+                        "error": "key messed up"
+                    }
+                })
+        })
     }
 
     findAll(): Observable<any> {
+        // return Observable.fromPromise(this.client.indices.getMapping({
+        //     ...this.baseParams
+        // }))
+        //     .pluck('master_screener', 'mappings', 'queries', 'properties')
+        //     .map(keyObj => {
+        //         delete keyObj['meta'];
+        //         delete keyObj['query'];
+        //         return keyObj
+        //     })
+        //     .map(obj => {
+        //         const array = [];
+
+        //         for(const name in obj) {
+        //             if (obj.hasOwnProperty(name)) {
+        //                 array.push({
+        //                     name,
+        //                     type: obj[name].type
+        //                 })
+        //             }
+        //         }
+
+        //         return array
+        //     })
         return Observable.fromPromise(this.client.indices.getMapping({
             ...this.baseParams
         }))
@@ -64,4 +102,4 @@ export class KeyService {
                 return array
             })
     }
-}
+} 
